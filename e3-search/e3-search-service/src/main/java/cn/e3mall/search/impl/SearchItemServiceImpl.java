@@ -38,6 +38,8 @@ public class SearchItemServiceImpl implements SearchItemService {
 				//写入索引库
 				solrServer.add(document);
 			}
+			//提交
+			solrServer.commit();
 			return E3Result.ok();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -22,7 +22,7 @@
 	
 	<!-- 应用dubbo服务 -->
 	<dubbo:application name="e3-portal-web"/>
-	<dubbo:registry protocol="zookeeper" address="192.168.1.106:2181"/>	
+	<dubbo:registry protocol="zookeeper" address="192.168.1.106:2180"/>	
 	<!-- <dubbo:reference interface="cn.e3mall.service.ItemService" id="itemService" />
 	<dubbo:reference interface="cn.e3mall.service.ItemCatService" id="itemCatService" />
 	<dubbo:reference interface="cn.e3mall.service.ItemParamItemService" id="itemParamItemService" /> -->
