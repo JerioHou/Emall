@@ -1,8 +1,10 @@
 package cn.e3mall.search.impl;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import cn.e3mall.common.pojo.SearchItem;
 import cn.e3mall.common.utils.E3Result;
 import cn.e3mall.search.SearchItemService;
+import cn.e3mall.search.dao.SearchDao;
 import cn.e3mall.search.mapper.ItemMapper;
 
 @Service
@@ -19,6 +22,7 @@ public class SearchItemServiceImpl implements SearchItemService {
 	private ItemMapper itemMapper;
 	@Autowired
 	private SolrServer solrServer;
+
 	
 	@Override
 	public E3Result importItmes() {
@@ -45,5 +49,22 @@ public class SearchItemServiceImpl implements SearchItemService {
 			e.printStackTrace();
 			return E3Result.build(500, "索引库导入失败");
 		}
+	}
+
+	@Override
+	public E3Result addItemDocument(long itemId) throws Exception {
+		SearchItem searchItem = itemMapper.getItemById(itemId);
+		SolrInputDocument document = new SolrInputDocument();
+		document.addField("id", searchItem.getId());
+		document.addField("item_title", searchItem.getTitle());
+		document.addField("item_sell_point", searchItem.getSell_point());
+		document.addField("item_price", searchItem.getPrice());
+		document.addField("item_image", searchItem.getImage());
+		document.addField("item_category_name", searchItem.getCategory_name());
+		// 5、向索引库中添加文档。
+		solrServer.add(document);
+		solrServer.commit();
+		// 4、返回成功，返回e3Result。
+		return E3Result.ok();
 	}
 }

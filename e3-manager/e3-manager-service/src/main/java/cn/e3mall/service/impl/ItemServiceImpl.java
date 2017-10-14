@@ -6,9 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,6 +43,10 @@ public class ItemServiceImpl implements ItemService {
 	TbItemDescMapper itemDescMapper;
 	@Autowired
 	TbItemParamItemMapper itemParamItemMapper;
+	@Autowired
+	private JmsTemplate jmsTemplate;
+	@Resource
+	private Destination topicDestination;
 	
 	@Override
 	public TbItem showItem(Long id) {
@@ -63,8 +75,8 @@ public class ItemServiceImpl implements ItemService {
 	 * 新增商品
 	 */
 	@Override
-	public E3Result addItem(TbItem item, String desc) {
-		long itemId = IDUtils.genItemId();
+	public E3Result addItem( TbItem item, String desc) {
+		final long itemId = IDUtils.genItemId();
 		item.setId(itemId);
 		//商品状态，1-正常，2-下架，3-删除
 		item.setStatus((byte)1);
@@ -80,6 +92,14 @@ public class ItemServiceImpl implements ItemService {
 		itemDesc.setCreated(date);
 		itemDesc.setUpdated(date);
 		itemDescMapper.insert(itemDesc);
+		jmsTemplate.send(topicDestination, new MessageCreator() {
+			
+			@Override
+			public Message createMessage(Session session) throws JMSException {
+				TextMessage textMessage = session.createTextMessage(itemId+"");
+				return textMessage;
+			}
+		});
 		return E3Result.ok();
 	}
 	/**

@@ -10,14 +10,14 @@ import org.junit.Test;
 
 public class TestSolrCloud {
 
-	@Test
-	public void testSolrCloud() throws Exception {
-		CloudSolrServer solrServer = new CloudSolrServer("192.168.1.106:2181,192.168.1.106:2182,192.168.1.106:2183");
-		solrServer.setDefaultCollection("collection2");
-		SolrInputDocument document = new SolrInputDocument();
-		document.setField("id", "solrCloud1");
-		document.setField("item_title", "隔壁是傻逼");
-		solrServer.add(document);
-		solrServer.commit();
-	}
+//	@Test
+//	public void testSolrCloud() throws Exception {
+//		CloudSolrServer solrServer = new CloudSolrServer("192.168.1.106:2181,192.168.1.106:2182,192.168.1.106:2183");
+//		solrServer.setDefaultCollection("collection2");
+//		SolrInputDocument document = new SolrInputDocument();
+//		document.setField("id", "solrCloud1");
+//		document.setField("item_title", "隔壁是傻逼");
+//		solrServer.add(document);
+//		solrServer.commit();
+//	}
 }
